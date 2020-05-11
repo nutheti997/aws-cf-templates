@@ -1,0 +1,41 @@
+Description: This template cereates an EC2 instance and two security group and user needs to select keyname for the keypair
+Parameters:
+  MyKeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Please select the the KeyPair
+
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      AvailabilityZone: us-east-1a
+      ImageId: ami-a4c7edb2
+      InstanceType: t2.micro
+      KeyName: !Ref MyKeyName
+      SecurityGroups:
+        - !Ref MySSHSecGroup
+        - !Ref MyHttpSecGroup
+
+  # This security Group allow access to Port 22 for SSH
+  MySSHSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: This securityGroup will give access to port 22 for SSH to entire world
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+  MyHttpSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: This securityGroup will give access to port 80 and 8080 for Http to entire world
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: 0.0.0.0/0
